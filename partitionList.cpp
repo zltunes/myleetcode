@@ -18,58 +18,59 @@ void printList( ListNode * );
 class Solution {
     public:
         ListNode *partition( ListNode *head, int x ) {
-            ListNode *virtualNode = new ListNode( x );
             ListNode *current  = head;
-            ListNode *tempBefore = NULL;
-            ListNode *tempAfter = NULL;
-            ListNode *currentNext = NULL; 
+            ListNode *listBefore = NULL;
+            ListNode *listBeforeHead = NULL;
+            ListNode *listAfter = NULL;
+            ListNode *listAfterHead = NULL;
             while( current != NULL ) {
-                currentNext = current->next;
                 if( current->val < x ) {
-                    current->next = virtualNode;
-                    if( tempBefore != NULL ) {
-                        tempBefore->next = current;
-                        tempBefore = current;
+                    if( listBefore != NULL ) {
+                        listBefore->next = current;
+                        listBefore = current;
                     }
                     else {
-                        tempBefore = current;
-                        head = current;
+                        listBefore = current;
+                        listBeforeHead = current;
                     }
                 }
                 else {
-                    if( tempAfter != NULL ) {
-                        tempAfter->next = current;
-                        tempAfter = current;
+                    if( listAfter != NULL ) {
+                        listAfter->next = current;
+                        listAfter = current;
                     }
                     else {
-                        tempAfter = current;
-                        virtualNode->next = tempAfter;
+                        listAfter = current;
+                        listAfterHead = current;
                     }
                 }
-                current = currentNext;
+                current = current->next;
             }
-            if( tempBefore )
-                tempBefore->next = virtualNode->next;
-            if( tempAfter )
-                tempAfter->next = NULL;
-            delete virtualNode;
-            return head;
+            if(listBeforeHead) {
+                listBefore->next = listAfterHead;
+            }
+            else {
+                listBeforeHead = listAfterHead;
+            }
+            if(listAfter)
+                listAfter->next = NULL;
+            return listBeforeHead;
         }
 };
 
 //test main
 int main() {
     Solution sol;
-    int test[] = { 2,1 };
+    int test[] = { 1 };
     ListNode *before = NULL;
     ListNode *head = before = new ListNode( test[ 0 ] );
-    for( int i = 1; i < 2; ++i ) {
+    for( int i = 1; i < 1; ++i ) {
         before->next = new ListNode( test[ i ] );
         before = before->next;
     }
     printList( head );
 
-    head = sol.partition( head, 2 );
+    head = sol.partition( head, 0 );
     printList( head );
     
 
