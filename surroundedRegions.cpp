@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <deque>
 using namespace std;
 
 class Solution {
@@ -10,7 +11,6 @@ public:
         if(board[0].size() == 0) return;
         this->width = board[0].size();
 
-        mBoard = board;
         vector<pair<int, int>> circleVec;
         for(int i = 1; i < height - 1; ++i) {
             if(board[0][i] == 'O') circleVec.push_back(make_pair(0,i));
@@ -18,8 +18,28 @@ public:
             if(board[height - 1][i] == 'O') circleVec.push_back(make_pair(height - 1,i));
             if(board[i][width - 1] == 'O') circleVec.push_back(make_pair(i,width - 1));
         }
+        solution2(circleVec, board);
+    }
+
+    void solution2(vector<pair<int, int>> &circleVec, vector<vector<char>> &board) {
+        deque<pair<int, int>> queue;
         for(auto item : circleVec) {
-            findNextCircleBlock(item);
+            queue.push_back(item);
+            while(!queue.empty()) {
+                pair<int, int> & t = queue.front();
+                queue.pop_front();
+                circlePos.push_back(t);
+                board[t.first][t.second] = 'X';
+                pair<int, int> dirs[4];
+                dirs[0] = make_pair(t.first, t.second + 1);
+                dirs[1] = make_pair(t.first + 1, t.second);
+                dirs[2] = make_pair(t.first, t.second - 1);
+                dirs[3] = make_pair(t.first - 1, t.second);
+                for(auto dir : dirs) {
+                    if(isCircleBlock(dir, board))
+                        queue.push_back(dir);
+                }
+            }
         }
         for(int i = 0; i < height; ++i)
             for(int j = 0; j < width; ++j)
@@ -29,11 +49,32 @@ public:
         }
     }
 
-    void findNextCircleBlock(pair<int, int> pos) {
+
+
+    bool isCircleBlock(pair<int, int> &block, vector<vector<char>> &board) {
+        if(block.first < 0 || block.first > height - 1) return false;
+        if(block.second < 0 || block.second > width - 1) return false;
+        if(board[block.first][block.second] == 'X') return false;
+        return true;
+    }
+
+    void solution1(vector<pair<int, int>> &circleVec, vector<vector<char>> &board) {
+        for(auto item : circleVec) {
+            findNextCircleBlock(item, board);
+        }
+        for(int i = 0; i < height; ++i)
+            for(int j = 0; j < width; ++j)
+                board[i][j] = 'X';
+        for(auto item : circlePos) {
+            board[item.first][item.second] = 'O';
+        }
+    }
+
+    void findNextCircleBlock(pair<int, int> pos, vector<vector<char>> &board) {
         if(pos.first < 0 || pos.first >= height) return;
         if(pos.second < 0 || pos.second >= width) return;
-        if(mBoard[pos.first][pos.second] == 'O') {
-            mBoard[pos.first][pos.second] = 'X';
+        if(board[pos.first][pos.second] == 'O') {
+            board[pos.first][pos.second] = 'X';
             circlePos.push_back(pos);
         }
         else
@@ -41,10 +82,10 @@ public:
         int &x = pos.first;
         int &y = pos.second;
 
-        findNextCircleBlock(make_pair(x + 1, y));
-        findNextCircleBlock(make_pair(x, y + 1));
-        findNextCircleBlock(make_pair(x - 1, y));
-        findNextCircleBlock(make_pair(x, y - 1));
+        findNextCircleBlock(make_pair(x + 1, y), board);
+        findNextCircleBlock(make_pair(x, y + 1), board);
+        findNextCircleBlock(make_pair(x - 1, y), board);
+        findNextCircleBlock(make_pair(x, y - 1), board);
     }
 private:
     int height, width;
@@ -54,8 +95,8 @@ private:
 
 int main() {
 
-    //vector<vector<char>> mBoard = {{'X','X','X','X'},{'X','O','O','X'},{'X','X','O','X'},{'X','O','X','X'}};
-    vector<vector<char>> mBoard = {{'O','O','O'},{'O','O','O'},{'O','O','O'}};
+    vector<vector<char>> mBoard = {{'X','X','X','X'},{'X','O','O','X'},{'X','X','O','X'},{'X','O','X','X'}};
+    //vector<vector<char>> mBoard = {{'O','O','O'},{'O','O','O'},{'O','O','O'}};
     Solution sol;
     sol.solve(mBoard);
 
