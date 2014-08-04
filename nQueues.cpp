@@ -1,29 +1,87 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stack>
+#define DEBUG
 using namespace std;
+
+void printSol(vector<vector<string> > sols) {
+    for(auto sol : sols) {
+        for(auto row : sol) {
+            cout << row << endl;
+        }
+        cout << endl;
+    }
+}
+
+void printBMap(vector<vector<bool>> &bMap) {
+#ifdef DEBUG
+    for(auto row : bMap) {
+        for(auto item : row)
+            cout << item;
+        cout << endl;
+    }
+    cout << endl;
+#endif
+}
 
 class Solution {
 public:
     vector<vector<string> > solveNQueens(int n) {
-        vector<bool> bRow(10, false);
-        vector<vector<bool>> bMap(10, bRow);
+        vector<bool> bRow(n, false);
+        vector<vector<bool>> bMap(n, bRow);
         vector<vector<string>> ret;
-        stack<pair<int, int>> oprStack;
+        vector<int> oprStack;
         stack<vector<pair<int, int>>> influStack;
-        for(int i = 0; i < n; ++i) {
-            pair<int, int> pos = make_pair(0, i);
-            oprStack.push(pos);
-            vector<pair<int, int>> influ = getInfluPos(pos, bMap);
-            influStack.push(influ);
-            for
-        
+        oprStack.push_back(0);
+        int nRow = 0;
+        influStack.push(getInfluPos(make_pair(nRow, 0), bMap));
+        if(n == 1) {
+            vector<string> t = {"Q"};
+            ret.push_back(t);
+            return ret; 
         }
-
+        nRow++;
+        int nCol = 0;
+        while(!oprStack.empty() || nCol < n) {
+            while(nCol < n && bMap[nRow][nCol] == true) nCol++;
+            if(nCol == n) {
+                nCol = *(oprStack.end() - 1) + 1;
+                oprStack.pop_back();
+                removeInfluPos(influStack.top(), bMap);
+                influStack.pop();
+                nRow--;
+                continue;
+            }
+            oprStack.push_back(nCol);
+            influStack.push(getInfluPos(make_pair(nRow, nCol), bMap));
+            nRow++;
+            nCol = 0;
+            if(nRow == n) {
+                vector<string> sol;
+                for(auto opr : oprStack) {
+                    string temp(n, '.');
+                    temp[opr] = 'Q';
+                    sol.push_back(temp);
+                }
+                ret.push_back(sol);
+                nCol = *(oprStack.end() - 1) + 1;
+                oprStack.pop_back();
+                removeInfluPos(influStack.top(), bMap);
+                influStack.pop();
+                nRow--;
+            }
+        }
         return ret;
     }
 
-    vector<pair<int, int>> getInfluPos(pair<int, int> & pos, vector<vector<bool>>& bMap) {
+    void removeInfluPos(vector<pair<int, int> > & poss, vector<vector<bool> > & bMap) {
+        for(auto pos : poss) {
+            bMap[pos.first][pos.second] = false;
+        }
+    }
+
+    vector<pair<int, int>> getInfluPos(pair<int, int> pos, vector<vector<bool>>& bMap) {
         vector<pair<int, int>> ret;
         int &row = pos.first;
         int &col = pos.second;
@@ -61,10 +119,13 @@ public:
                 ret.push_back(make_pair(i, j));
             }
         }
+        return ret;
     }
 };
 
 int main() {
-
+    Solution sol;
+    printSol(sol.solveNQueens(4));
+ 
     return 0;
 }
