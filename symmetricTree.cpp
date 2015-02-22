@@ -12,38 +12,12 @@ struct TreeNode {
 class Solution {
 public:
     bool isSymmetric(TreeNode *root) {
-        leftVec.clear();
-        rightVec.clear();
-        visitLeft(root);
-        visitRight(root);
-        for(int i = 0; i < leftVec.size(); ++i) {
-            if(leftVec[i] != rightVec[i])
-                return false;
-        }
-        return true;
+        return (root == NULL) || (root && isSymmetric(root->left, root->right));
     }
 
-    void visitLeft(TreeNode *node) {
-        if(node == NULL) {
-            leftVec.push_back(-1);   
-            return;
-        }
-        visitLeft(node->left);
-        leftVec.push_back(node->val);
-        visitLeft(node->right);
-    } 
-    void visitRight(TreeNode *node) {
-        if(node == NULL) {
-            rightVec.push_back(-1);
-            return;
-        }
-        visitRight(node->right);
-        rightVec.push_back(node->val);
-        visitRight(node->left);
+    bool isSymmetric(TreeNode *l_tree, TreeNode *r_tree) {
+        return (l_tree == NULL && r_tree == NULL) || (l_tree && r_tree && l_tree->val == r_tree->val && isSymmetric(l_tree->left, r_tree->right) && isSymmetric(l_tree->right, r_tree->left));
     }
-private:
-    vector<int> leftVec;
-    vector<int> rightVec;
 };
 
 int main() {

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "TreeNode.h"
 using namespace std;
 
 struct ListNode {
@@ -7,42 +8,58 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
 class Solution {
 public:
     TreeNode *sortedListToBST(ListNode *head) {
-
-    }
-    ListNode *findMid(ListNode *head) {
-        ListNode *it = head;
-        ListNode *half = head;
+        if(head == NULL) return NULL;
+        ListNode *iter = head;
         bool flag = false;
-        while(it) {
-            if(flag) {
-                half = half->next;
-            }
-            it = it->next;
+        ListNode *dummy = new ListNode(-1);;
+        dummy->next = head;
+        ListNode *half = dummy;
+        while(iter->next) {
+            iter = iter->next;
+            if(flag) half = half->next;
             flag = !flag;
         }
-        return half;
+        TreeNode *root = NULL;
+        root = new TreeNode(half->next->val);
+        root->right = sortedListToBST(half->next->next);
+        half->next = NULL;
+        root->left = sortedListToBST(dummy->next);
+        return root;
     }
-    TreeNode *constructTreeNode(ListNode *lNode) {
-        ListNode *mid = findMid(lNode);
-        TreeNode *root = new TreeNode(mid->val);
-        
-    }
-
 };
 
+ListNode *genList(int n) {
+    ListNode *dummy = new ListNode(-1);
+    ListNode *it = dummy;
+    int i = 0;
+    while(i < n) {
+        it->next = new ListNode(i);
+        ++i;
+        it = it->next;
+    }
+    return dummy->next;
+}
+
+void printList(const ListNode *l) {
+    while(l) {
+        cout << l->val << ' ';
+        l = l->next;
+    }
+    cout << endl;
+}
 
 int main() {
+    ListNode *l = genList(3);
+    printList(l);    
 
+    Solution sol;
+    TreeNode *tree = sol.sortedListToBST(l);
+
+    BuildTree builder;
+    builder.printLevelOrder(tree);
 
     return 0;
 }
