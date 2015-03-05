@@ -1,41 +1,40 @@
 #include <iostream>
-#include <stack>
+#include <vector>
 #include <string>
+#include <sstream>
 using namespace std;
 
 class Solution {
 public:
     string simplifyPath(string path) {
-        stack<char *> stackPath;
-        char *str = new char[path.size() + 1];
-        strcpy(str, path.c_str());
-        char *substr = strtok(str, "/");
-        while(substr != NULL) {
-            if(strcmp(substr,"..") == 0) {
-                if(!stackPath.empty())
-                    stackPath.pop();
+        stringstream ss;
+        ss.str(path);
+        string now;
+        vector<string> stk;
+        while(getline(ss, now, '/')) {
+            cout << now << endl;
+            if(now.size() == 0 || now == ".") {
+                continue;
             }
-            else if(strcmp(substr, ".") != 0) {
-                stackPath.push(substr);
+            if(now == "..") {
+                if(stk.empty()) continue;
+                stk.pop_back();
             }
-            substr = strtok(NULL, "/");
+            else
+                stk.push_back(now);
         }
         string ret;
-        char *retStr;
-        if(stackPath.empty()) return "/";
-        while(!stackPath.empty()) {
-            retStr = stackPath.top();
-            ret = retStr + ret;
-            ret = "/" + ret;
-            stackPath.pop();
+        for(auto &item : stk) {
+            ret.append("/" + item);
         }
-        delete [] str;
+        if(ret.size() == 0)
+            ret = "/";
         return ret;
     }
 };
 
 int main() {
     Solution sol;
-    cout << sol.simplifyPath("/home/foo/./.././bar") << endl;
+    cout << sol.simplifyPath("/home/../foo/./.././bar/..///") << endl;
     return 0;
 }

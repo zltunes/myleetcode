@@ -20,35 +20,36 @@ void printList(ListNode *node) {
 class Solution {
 public:
     ListNode *deleteDuplicates(ListNode *head) {
-        if(head == NULL || head->next == NULL) return head;
-        ListNode *tNode = new ListNode(0);
-        tNode->next = head;
-        head = tNode;
-        while(tNode->next && tNode->next->next) {
-            if(tNode->next->val == tNode->next->next->val) {
-                int val = tNode->next->val;
-                while(tNode->next != NULL && val == tNode->next->val) {
-                    tNode->next = tNode->next->next;
+        ListNode *tHead, *tEnd;
+        if(head == NULL) return head;
+        ListNode *dummy = new ListNode(head->val);
+        dummy->next = head;
+        tHead = dummy;
+        tEnd = dummy;
+        int cnt = 0;
+        while(tEnd->next) {
+            if(tEnd->val != tEnd->next->val) {
+                if(cnt <= 1) {
+                    tHead->next = tEnd;
+                    tHead = tEnd;
                 }
+                cnt = 0;
             }
-            else {
-                tNode = tNode->next;
-            }
+            tEnd = tEnd->next;
+            ++cnt;
         }
-        ListNode *del = head;
-        head = head->next;
-        delete del;
-        return head;
+        if(cnt <= 1)
+            tHead->next = tEnd;
+        else
+            tHead->next = tEnd->next;
+
+        return dummy->next; 
     }
 };
 
 int main() {
     ListNode *node = new ListNode(0);
     ListNode *head = node;
-    node->next = new ListNode(0);
-    node = node->next;
-    node->next = new ListNode(3);
-    node = node->next;
     node->next = new ListNode(3);
     node = node->next;
     node->next = new ListNode(3);

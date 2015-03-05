@@ -2,103 +2,76 @@
 #include <vector>
 using namespace std;
 
+typedef vector<char> vc;
+typedef vector<vc>   vvc;
+
 class Solution {
+    typedef vector<char> vc;
+    typedef vector<vc>   vvc;
 public:
     bool exist(vector<vector<char> > &board, string word) {
-        isFound = false;
-        if(word == "") return false;
-        pattern = word;
-        this->height = board.size();
-        if(height == 0) return false;
-        this->width = board[0].size();
-        if(width == 0) return false;
-        table = board;
-        vector<pair<int, int>> position;
+        if(word.size() == 0) return false;
+        char head = word.front();
+        for(int i = 0; i < board.size(); ++i) {
+            for(int j = 0; j < board[i].size(); ++j) {
+                char temp = board[i][j];
+                if(temp == head) {
+                    board[i][j] = '.';
+                    if(check(board, i, j, word.substr(1, word.size() - 1)))
+                        return true;
+                    board[i][j] = temp;
+                }
+            }
+        }
+        return false;
+    }
 
-        char firstChr = word[0];
-        for(int i = 0; i < height; ++i) {
-            for(int j = 0; j < width; ++j) {
-                cout << table[i][j] << " ";
-                if(board[i][j] == firstChr)
-                    position.push_back(make_pair(i, j));
-            }
-            cout << endl;
-        }
-        int index = 1;
-        for(vector<pair<int, int>> :: iterator it = position.begin(); it != position.end(); ++it) {
-            cout << "begin with :" << it->first << "" << it->second << " " << table[it->first][it->second] << endl;
-            if(checkPattern(*it, 1) == true )
+    bool check(vvc &board, int i, int j, string word) {
+        if(word.size() == 0) return true;
+        char &head = word.front();
+        int len_y = board.size();
+        int len_x = board[0].size();
+        if(i + 1 < len_y && board[i + 1][j] == head) {
+            char temp = board[i + 1][j];
+            board[i + 1][j] = '.';
+            if(check(board, i + 1, j, word.substr(1, word.size() - 1)))
                 return true;
+            board[i + 1][j] = temp;
+        }
+        if(i - 1 >= 0 && board[i - 1][j] == head) {
+            char temp = board[i - 1][j];
+            board[i - 1][j] = '.';
+            if(check(board, i - 1, j, word.substr(1, word.size() - 1)))
+                return true;
+            board[i - 1][j] = temp;
+        }
+        if(j + 1 < len_x && board[i][j + 1] == head) {
+            char temp = board[i][j + 1];
+            board[i][j + 1] = '.';
+            if(check(board, i, j + 1, word.substr(1, word.size() - 1)))
+                return true;
+            board[i][j + 1] = temp;
+        }
+        if(j - 1 >= 0 && board[i][j - 1] == head) {
+            char temp = board[i][j - 1];
+            board[i][j - 1] = '.';
+            if(check(board, i, j - 1, word.substr(1, word.size() - 1)))
+                return true;
+            board[i][j - 1] = temp;
         }
         return false;
     }
-    bool checkPattern(pair<int, int>pos, int index) {
-        bool next[4];
-        vector<pair<int, int>> posStack;
-        next[0] = checkNext(pos, 0, index, posStack);
-        next[1] = checkNext(pos, 1, index, posStack);
-        next[2] = checkNext(pos, 2, index, posStack);
-        next[3] = checkNext(pos, 3, index, posStack);
-        return next[0] || next[1] || next[2] || next[3];
-    }
-    bool checkNext(pair<int, int> pos, int direction, int index, vector<pair<int, int>> &posStack) {
-        if(isFound) return true;
-        if(index >= pattern.size()) {
-            isFound = true;
-            return true;
-        }
-        pos.first += dir[direction].y;
-        pos.second += dir[direction].x;
-        for(vector<pair<int, int>> :: iterator it = posStack.begin(); it != posStack.end(); ++it) {
-            if(it->second == pos.second && it->first == pos.first) {
-                return false;
-            }
-        }
-        cout << "(" << pos.first << "," << pos.second << "), index is " << index << endl;
-        if(pos.first < 0 || pos.first >= this->height) {
-            return false; 
-        }
-        if(pos.second < 0 || pos.second >= this->width) {
-            return false;
-        }
-        if(table[pos.first][pos.second] == pattern[index]) {
-            posStack.push_back(pos);
-            cout << "pattern matched : " << pattern[index] << endl;
-            bool next[4];
-            next[0] = checkNext(pos, 0, index + 1, posStack);
-            next[1] = checkNext(pos, 1, index + 1, posStack);
-            next[2] = checkNext(pos, 2, index + 1, posStack);
-            next[3] = checkNext(pos, 3, index + 1, posStack);
-            posStack.pop_back();
-            if(next[0] || next[1] || next[2] || next[3])
-                return true;
-        }
-        return false;
-    }
-    Solution() {
-        dir[0].x = 1;
-        dir[0].y = 0;
-        dir[1].x = 0;
-        dir[1].y = 1;
-        dir[2].x = -1;
-        dir[2].y = 0;
-        dir[3].x = 0;
-        dir[3].y = -1;
-    }
-private:
-    struct Dir {
-        int x, y;
-    } dir[4];
-    int height, width;
-    vector<vector<char>> table;
-    string pattern;
-    bool isFound;
 };
 
 
 int main() {
-    vector<vector<char>> vec = {{'a', 'b', 'c', 'e'}, {'s', 'f', 'c', 's'}, {'a', 'd', 'e', 'e'}};
+    vvc vec = {
+        {'a', 'b', 'c', 'e'}, 
+        {'s', 'f', 'c', 's'}, 
+        {'a', 'd', 'e', 'e'}
+    };
+
     Solution sol;
-    cout << sol.exist(vec, "see") << endl;
+    cout << sol.exist(vec, "abcce") << endl;
     return 0;
 }

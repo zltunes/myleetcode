@@ -8,7 +8,7 @@ public:
         if(n == 1) return 1;
         int next_pos = 1;
         for(int i = 1; i < n; ++i) {
-            if(A[i] != A[i - 1]) {
+            if(A[i] != A[next_pos - 1]) {
                 A[next_pos] = A[i];
                 ++next_pos;
             }

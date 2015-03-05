@@ -12,21 +12,20 @@ public:
     ListNode *deleteDuplicates(ListNode *head) {
         ListNode *tHead, *tEnd;
         if(head == NULL) return head;
-        if(head->next == NULL) return head;
-        tHead = head;
-        tEnd = head->next;
-        while(tHead) {
-            if(tEnd != NULL && tHead->val == tEnd->val) {
-                tEnd = tEnd->next;
-            }
-            else {
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+        tHead = dummy;
+        tEnd = dummy;
+        while(tEnd->next) {
+            if(tHead->next->val != tEnd->next->val) {
                 tHead->next = tEnd;
                 tHead = tEnd;
-                if(tEnd != NULL)
-                    tEnd = tEnd->next;
             }
+            tEnd = tEnd->next;
         }
-        return head; 
+        tHead->next = tEnd;
+        tHead = tEnd;
+        return dummy->next; 
     }
 };
 
@@ -54,5 +53,5 @@ int main() {
     printNode(head);
     Solution sol;
     printNode(sol.deleteDuplicates(head));
-	return 0;
+    return 0;
 }

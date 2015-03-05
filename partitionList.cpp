@@ -1,7 +1,7 @@
- /*************************************************************************
-    > Author: yiyunyao
-    > Mail: yiyunyao@sina.cn
-    > Created Time: 2014年04月09日 星期三 20时16分38秒
+/*************************************************************************
+  > Author: yiyunyao
+  > Mail: yiyunyao@sina.cn
+  > Created Time: 2014年04月09日 星期三 20时16分38秒
  ************************************************************************/
 
 #include<iostream>
@@ -16,46 +16,46 @@ struct ListNode {
 void printList( ListNode * );
 
 class Solution {
-    public:
-        ListNode *partition( ListNode *head, int x ) {
-            ListNode *current  = head;
-            ListNode *listBefore = NULL;
-            ListNode *listBeforeHead = NULL;
-            ListNode *listAfter = NULL;
-            ListNode *listAfterHead = NULL;
-            while( current != NULL ) {
-                if( current->val < x ) {
-                    if( listBefore != NULL ) {
-                        listBefore->next = current;
-                        listBefore = current;
-                    }
-                    else {
-                        listBefore = current;
-                        listBeforeHead = current;
-                    }
+public:
+    ListNode *partition( ListNode *head, int x ) {
+        ListNode *current  = head;
+        ListNode *listBefore = NULL;
+        ListNode *listBeforeHead = NULL;
+        ListNode *listAfter = NULL;
+        ListNode *listAfterHead = NULL;
+        while( current != NULL ) {
+            if( current->val < x ) {
+                if( listBefore != NULL ) {
+                    listBefore->next = current;
+                    listBefore = current;
                 }
                 else {
-                    if( listAfter != NULL ) {
-                        listAfter->next = current;
-                        listAfter = current;
-                    }
-                    else {
-                        listAfter = current;
-                        listAfterHead = current;
-                    }
+                    listBefore = current;
+                    listBeforeHead = current;
                 }
-                current = current->next;
-            }
-            if(listBeforeHead) {
-                listBefore->next = listAfterHead;
             }
             else {
-                listBeforeHead = listAfterHead;
+                if( listAfter != NULL ) {
+                    listAfter->next = current;
+                    listAfter = current;
+                }
+                else {
+                    listAfter = current;
+                    listAfterHead = current;
+                }
             }
-            if(listAfter)
-                listAfter->next = NULL;
-            return listBeforeHead;
+            current = current->next;
         }
+        if(listBeforeHead) {
+            listBefore->next = listAfterHead;
+        }
+        else {
+            listBeforeHead = listAfterHead;
+        }
+        if(listAfter)
+            listAfter->next = NULL;
+        return listBeforeHead;
+    }
 };
 
 //test main
@@ -72,7 +72,7 @@ int main() {
 
     head = sol.partition( head, 0 );
     printList( head );
-    
+
 
     return 0;
 }
