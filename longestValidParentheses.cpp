@@ -1,46 +1,42 @@
 #include <iostream>
-#include <stack>
+#include <vector>
 using namespace std;
 
 class Solution {
+    using vi = vector<int>;
 public:
     int longestValidParentheses(string s) {
-        int cnt = 0;
-        int len = s.length();
-        while(cnt != len && s[cnt] == ')') ++cnt;
-        if(cnt == len) return 0;
-        stack<char> stk;
-        int validLength = 0;
-        int max = 0;
-        stk.push(s[cnt++]);
-        while(cnt != len) {
-            if(s[cnt] == '(')
-                stk.push(s[cnt]);
-            else {
-                if(!stk.empty()) {
-                    stk.pop();
-                    if(!stk.empty()) {
-                        if(max < validLength)
-                            max = validLength;
-                        validLength = 0;
-                    }
-                    ++validLength;
-                }
-                else {
-                    if(max < validLength)
-                        max = validLength;
-                    validLength = 0;
-                }
+        int i = 0, j = s.size() - 1;
+        while(s[i] == ')') ++i;
+        while(s[j] == '(') --j;
+        s = s.substr(i, j - i + 1);
+        vi dp;
+        dp.resize(s.size(), 0);
+        int indice = s.size() - 2;
+        int max_len = 0;
+        int pos = indice;
+        for(; indice >= 0; --indice) {
+            if(s[indice] == ')') continue;
+            int j = indice + 1 + dp[indice + 1];
+            int temp = 0;
+            if(j < s.size() && s[j] == ')') {
+                temp = dp[indice + 1] + 2;
+                if(j + 1 < s.size())
+                    temp += dp[j + 1];
             }
-            ++cnt;
+            if(temp > max_len) {
+                max_len = temp;
+                pos = indice;
+            }
+            dp[indice] = temp;
         }
-        return validLength * 2;
+        return max_len;
     }
 };
 
 int main() {
-    string s = "()(())";
+    string s = "))))(((";
     Solution sol;
-    cout << sol.longestValidParentheses(s);
+    cout << sol.longestValidParentheses(s) << endl;
     return 0;
 }
