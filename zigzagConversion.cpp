@@ -4,8 +4,25 @@
 using namespace std;
 
 class Solution {
+    using vs = vector<string>;
 public:
-    typedef vector<char> vc;
+    string convert(string text, int nRows) {
+        if(nRows == 1) return text;
+        vs p(nRows, "");
+
+        int cnt = 0, seq = -1;
+        for(auto &chr : text) {
+            p[cnt].push_back(chr);
+            if(cnt == 0 || cnt == nRows - 1)
+                seq = -seq;
+            cnt += seq;
+        }
+        string ret;
+        for(auto &s : p)
+            ret += s;
+        return ret;
+    }
+    /*typedef vector<char> vc;
     typedef vector<vc> vvc;
     string convert(string s, int nRows) {
         if(nRows <= 1) return s;
@@ -28,7 +45,7 @@ public:
             ret += string(it->begin(), it->end());
         }
         return ret;
-    }
+    }*/
     /*
     typedef vector<string> vs;
     string convert(string s, int nRows) {
@@ -54,7 +71,7 @@ public:
 };
 
 int main() {
-    string test = "AB";
+    string test = "abcdef";
     Solution sol;
     //cout << (sol.convert(test, 1) == "PAHNAPLSIIGYIR") << endl;
     cout << sol.convert(test, 1) << endl;

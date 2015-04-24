@@ -5,29 +5,22 @@
 using namespace std;
 
 class Solution {
+    using vs = vector<string>;
+    using ds = deque<string>;
 public:
-    typedef vector<string> vs;
-    typedef deque<string> dqs;
-    vector<string> letterCombinations(string digits) {
-        dqs ret {""};
-        vs mapping {" ", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
-        if(string::npos != digits.find('1')) {
-            digits.erase(remove(digits.begin(), digits.end(), '1'), digits.end());
+    vs letterCombinations(string digits) {
+        int size = digits.size();
+        vs ret {""};
+        vs table {" ", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        for(int i = 0; i < size; ++i) {
+            if(digits[i] == '1') continue;
+            vs temp {ret.begin(), ret.end()};
+            ret.clear();
+            for(auto &s : temp)
+                for(auto &chr : table[digits[i] - '0'])
+                    ret.push_back(s + chr);
         }
-        if(digits.length() < 1) return vs{""};
-        int pos = 0;
-        do {
-            string f = ret.front();
-            if(f.length() != pos) {
-                pos = f.length();
-            }
-            ret.pop_front();
-            auto chars = mapping[digits[pos] - '0'];
-            for(auto it = chars.begin(); it != chars.end(); ++it) {
-                ret.push_back(f + *it);
-            }
-        } while(ret.front().size() != digits.length());
-        return vs {ret.begin(), ret.end()};
+        return ret;
     }
 };
 
@@ -39,7 +32,7 @@ void printVS(const vector<string> & vs) {
 }
 
 int main() {
-    string test = "0194";    
+    string test = "294";    
     Solution sol;
     printVS(sol.letterCombinations(test));
     return 0;

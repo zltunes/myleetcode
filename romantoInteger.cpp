@@ -54,6 +54,7 @@ public:
             size_t pos = 0;
             for(int num = 0; num < 10; ++num) {
                 string temp = getRomanString(table[num], bit);
+                cout << temp << endl;
                 if(string::npos == (pos = s.rfind(temp))) {
                     continue;
                 }

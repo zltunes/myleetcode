@@ -1,7 +1,7 @@
 #include <iostream>
-#include <assert.h>
 #include <stack>
 #include <string>
+#include <cassert>
 using namespace std;
 
 class Solution {

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <climits>
 using namespace std;
 
 class Solution {
@@ -8,7 +9,7 @@ public:
         if(x == INT_MIN) return 0;
         string STR_MAX = to_string(INT_MAX);
         string STR_MIN = to_string(INT_MIN);
-        STR_MIN = STR_MIN.substr(1, STR_MIN.length() - 1);
+        STR_MIN = STR_MIN.substr(1);
         bool isNega = false;
         if(x < 0) {
             isNega = true;
@@ -30,9 +31,9 @@ public:
     }
     int stringToInt(string num) {
         int sum = 0;
-        for(int i = 0; i < num.length(); ++i) {
+        for(auto &n : num) {
             sum *= 10;
-            sum += num[i] - '1' + 1; 
+            sum += n - '1' + 1; 
         } 
         return sum;
     }
@@ -41,6 +42,6 @@ public:
 
 int main() {
     Solution sol;
-    cout << sol.reverse(-2110001) << endl;
+    cout << sol.reverse(-1231231231) << endl;
     return 0;
 }
