@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stack>
+#include <vector>
 #include "ListNode.h"
 using namespace std;
 
@@ -13,52 +13,34 @@ using namespace std;
  */
 class Solution {
 public:
-    ListNode *reverseKGroup(ListNode *head, int k) {
-        if(k <= 1 || head == NULL) return head;
+    ListNode *reverseKGroup(ListNode *l, int k) {
         ListNode *dummy = new ListNode(-1);
-        ListNode *iter = dummy;
-        dummy->next = head;
-        while(enoughNodes(iter, k)) {
-            iter->next = reverse(iter, k); 
-            int t = k;
-            while(t--) {
-                iter = iter->next;
+        ListNode *it = dummy;
+        vector<ListNode *> stk;
+        for(;;) {
+            for(int i = 0; i < k; ++i) {
+                if(l) {
+                    stk.push_back(l);
+                    l = l->next;
+                }
+                else break;
             }
+            if(stk.size() == k) {
+                while(!stk.empty()) {
+                    it->next = stk.back();
+                    stk.pop_back();
+                    it = it->next;
+                }
+                it->next = l;
+            }
+            else break;
         }
         return dummy->next;
-    }
-    bool enoughNodes(const ListNode *iter, int k) {
-        while(k--) {
-            if(iter->next == NULL) {
-                return false;
-            }
-            iter = iter->next;
-        }
-        return true;
-    }
-    ListNode *reverse(ListNode *iter, int k) {
-        stack<ListNode *> lnstk;
-        ListNode *head = iter;
-        while(k--) {
-            lnstk.push(iter->next);
-            iter = iter->next;
-        }
-        head->next = iter;
-        iter = iter->next;
-        ListNode *temp = NULL;
-        while(!lnstk.empty()) {
-            temp = lnstk.top();
-            lnstk.pop();
-            if(!lnstk.empty())
-                temp->next = lnstk.top();
-        }
-        temp->next = iter;
-        return head->next;
     }
 };
 
 int main() {
     Solution sol;
-    printList(sol.reverseKGroup(genList(8,1,1), 7));
+    printList(sol.reverseKGroup(genList(8,1,1), 3));
     return 0;
 }

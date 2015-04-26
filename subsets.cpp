@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 typedef vector<int> vi;
@@ -30,15 +31,13 @@ public:
 };
 
 int main() {
-    vi vec {};
+    vi vec {1,2,3};
     Solution sol;
     vvi ret = sol.subsets(vec);
     for(auto & subset : ret) {
-        for(auto & item : subset) {
+        for(auto & item : subset)
             cout << item << ' '; 
-        }
         cout << endl;
     }
-    cout << "end print" << endl;
     return 0;
 }

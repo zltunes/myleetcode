@@ -44,8 +44,8 @@ public:
 };
 
 int main() {
-    vector<int> vec = {5,4,7,5,3,2};
-    vector<int> test = {5,4,7,5,3,2};
+    vector<int> vec = {2,1,1};
+    vector<int> test = {2,1,1};
     Solution sol;
     cout << "my algorithm" << endl;
     printVec(vec);

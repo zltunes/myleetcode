@@ -1,49 +1,47 @@
 #include <iostream>
 #include <unordered_map>
-#include <map>
-
+#include <list>
 using namespace std;
 
 class LRUCache{
 public:
+    struct LRUNode {
+        int k, v;
+    };
     LRUCache(int capacity) {
-        this->size = 0;
-        this->capacity = capacity;
+       this->size = capacity;
     }
 
     int get(int key) {
-        if(cacheMap.count(key) == 0) return -1;
-        for(map<int, int> :: iterator it = cacheMap.begin(); it != cacheMap.end(); ++it) {
-            it->second += 1;
+        if(cache_map.find(key) != cache_map.end()) {
+            auto it = cache_map[key];
+            cache_list.splice(cache_list.begin(), cache_list, it);
+            cache_map[key] = cache_list.begin();
+            return cache_list.begin()->v;
         }
-        cacheMap[key] = 0;
-        return storeMap[key];
+        return -1;
     }
 
     void set(int key, int value) {
-        storeMap[key] = value;
-        if(cacheMap.count(key) == 0) {
-            if(size < capacity) {
-                size++;
+        if(cache_map.find(key) == cache_map.end()) {
+            if(cache_list.size() == size) {
+                cache_map.erase(cache_list.back().k);
+                cache_list.pop_back();
             }
-            else {
-                int LUU = 0, LUUkey = 0;
-                for(map<int, int> :: iterator it = cacheMap.begin(); it != cacheMap.end(); ++it) {
-                    if(it->second > LUU) { 
-                        LUU = it->second;
-                        LUUkey = it->first; 
-                    }
-                }
-                cacheMap.erase(LUUkey);
-            }
+            cache_list.push_front(LRUNode {key, value});
+            cache_map[key] = cache_list.begin(); 
         }
-        cacheMap[key] = 0;
+        else {
+            auto it = cache_map[key];
+            cache_list.splice(cache_list.begin(), cache_list, it);
+            cache_list.front().v = value;
+            cache_map[key] = cache_list.begin();
+        }
     }
 private:
     int size;
-    int capacity;
-    unordered_map<int, int> storeMap;
-    map<int,int> cacheMap;
+    list<LRUNode> cache_list;
+    unordered_map<int, list<LRUNode>::iterator > cache_map;
 };
 
 int main() {

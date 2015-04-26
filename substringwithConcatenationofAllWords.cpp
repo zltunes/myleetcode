@@ -15,16 +15,14 @@ class Solution {
     typedef unordered_map<string, int> msi;
 public:
     vector<int> findSubstring(string S, vector<string> &L) {
-        if(L.empty()) return vi {};
-        int word_length = L.front().length();
         vi ret;
+        if(L.empty()) return ret;
+        int word_length = L.front().length();
+
         msi origin_dic;
-        for(auto & word : L) {
-            if(origin_dic.count(word) == 0)
-                origin_dic[word] = 1; 
-            else
-                origin_dic[word] += 1;
-        }
+        for(auto & word : L)
+            origin_dic[word] += 1;
+
         int word_size = L.size();
         for(int offset = 0; offset < word_length; ++offset) {
             int i = offset, j = offset;
