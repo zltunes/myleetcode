@@ -21,6 +21,6 @@
 *.app
 *.dSYM
 
-*
-!*.cpp
-!makefile
+*.json
+*.py
+.DS_Store
