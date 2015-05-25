@@ -22,5 +22,4 @@
 *.dSYM
 
 *.json
-*.py
 .DS_Store
