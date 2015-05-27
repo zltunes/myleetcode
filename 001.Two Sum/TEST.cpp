@@ -3,7 +3,7 @@
 #include "Solution.h"
 #include "../Catch/single_include/catch.hpp"
 
-TEST_CASE("two sum are computed", "[twoSum]")
+TEST_CASE("Two Sum", "[twoSum]")
 {
     SECTION("1")
     {
